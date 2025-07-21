@@ -1,102 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>QR Love</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      margin: 0;
-      background: black;
-      overflow: hidden;
-      color: white;
-      font-family: sans-serif;
-      text-align: center;
-      padding-top: 100px;
-    }
-
-    #qrcode {
-      margin-top: 20px;
-      z-index: 10;
-      position: relative;
-    }
-
-    .heart-float {
-      position: absolute;
-      bottom: 0;
-      width: 20px;
-      height: 20px;
-      background: red;
-      transform: rotate(-45deg);
-      animation: floatUp 4s linear forwards;
-      z-index: 1;
-    }
-
-    .heart-float::before,
-    .heart-float::after {
-      content: "";
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background: red;
-      border-radius: 50%;
-    }
-
-    .heart-float::before {
-      top: -10px;
-      left: 0;
-    }
-
-    .heart-float::after {
-      left: 10px;
-      top: 0;
-    }
-
-    @keyframes floatUp {
-      0% {
-        transform: translateY(0) rotate(-45deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-100vh) rotate(-45deg);
-        opacity: 0;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1> Yêu Em ❤️ Như Ý </h1>
+  <canvas id="heartCanvas"></canvas>
   <div id="qrcode"></div>
 
   <!-- QR Code Library -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-
-  <script>
-    // Tạo hiệu ứng tim bay
-    document.addEventListener("DOMContentLoaded", function () {
-      setInterval(() => {
-        const heart = document.createElement("div");
-        heart.classList.add("heart-float");
-        heart.style.left = Math.random() * 100 + "vw";
-        document.body.appendChild(heart);
-
-        setTimeout(() => {
-          heart.remove();
-        }, 4000);
-      }, 300);
-
-      // Tạo mã QR
-       //new QRCode(document.getElementById("qrcode"), {
-        //text: "https://hoangthan1505.github.io/QR-LOVE-1505/",
-        //width: 128,
-        //height: 128,
-        //colorDark: "#000000",
-        //colorLight: "#ffffff",
-        //correctLevel: QRCode.CorrectLevel.H,
-      //});
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
-
