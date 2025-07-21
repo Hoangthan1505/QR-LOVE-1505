@@ -1,62 +1,80 @@
-// Khởi tạo QR
+// QR code
 new QRCode(document.getElementById("qrcode"), {
-  text: "https://example.com", // <-- Thay link bạn muốn ở đây
-  width: 100,
-  height: 100,
-  colorDark : "#000000",
-  colorLight : "#ffffff",
+  text: "https://example.com", // <-- Thay bằng link bạn muốn
+  width: 120,
+  height: 120,
+  colorDark: "#000000",
+  colorLight: "#ffffff",
 });
 
-// Vẽ trái tim bằng particles
-const canvas = document.getElementById("heartCanvas");
+// Canvas heart animation
+const canvas = document.getElementById("heart-canvas");
 const ctx = canvas.getContext("2d");
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const particles = [];
-const particleCount = 500;
 
-function pointOnHeart(t) {
+function heartFunction(t) {
   const x = 16 * Math.pow(Math.sin(t), 3);
-  const y = -(
-    13 * Math.cos(t) -
-    5 * Math.cos(2 * t) -
-    2 * Math.cos(3 * t) -
-    Math.cos(4 * t)
-  );
+  const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
   return { x, y };
 }
 
-for (let i = 0; i < particleCount; i++) {
-  const t = Math.PI * 2 * Math.random();
-  const pos = pointOnHeart(t);
-  particles.push({
-    x: canvas.width / 2,
-    y: canvas.height / 2,
-    tx: canvas.width / 2 + pos.x * 20,
-    ty: canvas.height / 2 + pos.y * 20,
-    speed: Math.random() * 0.05 + 0.01,
-  });
+class Particle {
+  constructor(x, y, angle) {
+    this.x = x;
+    this.y = y;
+    this.angle = angle;
+    this.radius = Math.random() * 1.5 + 1;
+    this.life = 100;
+    this.vx = Math.cos(angle) * (Math.random() * 3);
+    this.vy = Math.sin(angle) * (Math.random() * 3);
+    this.color = "red";
+  }
+
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.life--;
+  }
+
+  draw(ctx) {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
 }
 
 function animate() {
-  ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+  ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  for (let p of particles) {
-    const dx = p.tx - p.x;
-    const dy = p.ty - p.y;
-    p.x += dx * p.speed;
-    p.y += dy * p.speed;
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+  for (let i = 0; i < 20; i++) {
+    const t = Math.random() * 2 * Math.PI;
+    const { x, y } = heartFunction(t);
+    particles.push(new Particle(centerX + x * 10, centerY - y * 10, t));
+  }
 
-    ctx.fillStyle = "red";
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-    ctx.fill();
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.update();
+    p.draw(ctx);
+    if (p.life <= 0) {
+      particles.splice(i, 1);
+    }
   }
 
   requestAnimationFrame(animate);
 }
 
 animate();
+
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
